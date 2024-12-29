@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt
 from board import Board
 from score_board import ScoreBoard
 from board_size_dialog import BoardSizeDialog
+from board import Board
 
 class Go(QMainWindow):
 
@@ -26,7 +27,7 @@ class Go(QMainWindow):
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.scoreBoard)
         self.scoreBoard.make_connection(self.board)
 
-        self.resize(800, 800)
+        self.adjustSize()
         self.center()
         self.setWindowTitle('Go')
         self.show()

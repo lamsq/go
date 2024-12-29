@@ -90,7 +90,7 @@ class Board(QFrame):
     def mousePressEvent(self, event):
         row, col = self.mousePosToColRow(event)
         if 0 <= row < self.boardHeight and 0 <= col < self.boardWidth:
-            clickLoc = f"click location [row: {row}, col: {col}]"
+            clickLoc = f"[row: {row}, col: {col}]"
             print("mousePressEvent() - " + clickLoc)
             self.clickLocationSignal.emit(clickLoc)
             self.clicked_points.append(QPoint(col, row))  #adds the clicked point

@@ -11,7 +11,7 @@ class ScoreBoard(QDockWidget):
 
     def initUI(self):
         '''initiates ScoreBoard UI'''
-        self.resize(200, 200)
+        self.setFixedWidth(130)  # Set fixed width to 130 pixels
         self.setWindowTitle('ScoreBoard')
 
         #main widget 
@@ -26,6 +26,10 @@ class ScoreBoard(QDockWidget):
         self.mainLayout.addWidget(self.label_clickLocation)
         self.mainLayout.addWidget(self.label_timeRemaining)
         self.setWidget(self.mainWidget)
+
+        # Set word wrap for labels to ensure text fits within the fixed width
+        self.label_clickLocation.setWordWrap(True)
+        self.label_timeRemaining.setWordWrap(True)
 
     def make_connection(self, board):
         '''this handles a signal sent from the board class'''
