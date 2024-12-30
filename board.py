@@ -1,6 +1,8 @@
 from PyQt6.QtWidgets import QFrame
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QPoint
 from PyQt6.QtGui import QPainter, QColor, QBrush, QPen
+from piece import Piece
+from game_logic import GameLogic
 
 class Board(QFrame):  
     updateTimerSignal = pyqtSignal(int)  #signal sent for the timer 
@@ -8,14 +10,17 @@ class Board(QFrame):
 
     cellSize = 40  #size of each cell 
     timerSpeed = 1000  #the timer updates every 1 second
-    counter = 10  #the start number for the counter 
+    counter = 10  #the start number for the counter
+
 
     def __init__(self, parent, board_size):
         super().__init__(parent)
         self.boardWidth = board_size
         self.boardHeight = board_size
+
+        self.game_logic = GameLogic(board_size)
+        self.current_player = Piece.Black
         self.initBoard()
-        self.clicked_points = []
 
     def initBoard(self):
     
@@ -76,31 +81,29 @@ class Board(QFrame):
         self.drawBoardSquares(painter)
         self.drawPieces(painter)
 
-        painter.setBrush(QColor(0, 0, 0))  #brush color black
-        painter.setPen(Qt.PenStyle.NoPen)  #no outline
-        
-        padding = 20  #add the padding
-        for point in self.clicked_points:
-            x = point.x() * self.cellSize + padding
-            y = point.y() * self.cellSize + padding
-            diameter = self.cellSize - 2 
-            painter.drawEllipse(x - diameter // 2, y - diameter // 2, diameter, diameter)
-
-
     def mousePressEvent(self, event):
         row, col = self.mousePosToColRow(event)
         if 0 <= row < self.boardHeight and 0 <= col < self.boardWidth:
+
             clickLoc = f"[row: {row}, col: {col}]"
             print("mousePressEvent() - " + clickLoc)
             self.clickLocationSignal.emit(clickLoc)
-            self.clicked_points.append(QPoint(col, row))  #adds the clicked point
+
+            # Attempt to place via game_logic
+            placed = self.game_logic.place_stone(row,col,self.current_player)
+            if placed:
+                #if stone placed, switch players
+                if self.current_player == Piece.Black:
+                    self.current_player = Piece.White
+                else:
+                    self.current_player = Piece.Black
+
             self.update()  #triggers repaint
 
 
     def resetGame(self):
         '''clears pieces from the board'''
-        self.boardArray = [[0 for _ in range(self.boardWidth)] for _ in range(self.boardHeight)]
-        self.clicked_points = []  #clears all placed dots
+        self.game_logic.reset_board()
         self.update()  #triggers repaint
 
 
@@ -125,18 +128,18 @@ class Board(QFrame):
 
     def drawPieces(self, painter):
         '''draw the pieces on the board'''
-    
         padding = 20
         radius = self.cellSize // 2 - 2
 
         for row in range(self.boardHeight):
             for col in range(self.boardWidth):
-                if self.boardArray[row][col] != 0:
+                piece = self.game_logic.board[row][col]
+                if piece != Piece.NoPiece:
                     painter.save()
                     painter.translate(padding + col * self.cellSize, padding + row * self.cellSize)
-                    if self.boardArray[row][col] == 1:
+                    if piece == Piece.Black:
                         painter.setBrush(QBrush(Qt.GlobalColor.black))
-                    else:
+                    elif piece == Piece.White:
                         painter.setBrush(QBrush(Qt.GlobalColor.white))
                     painter.drawEllipse(-radius, -radius, 2*radius, 2*radius)
                     painter.restore()

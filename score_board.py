@@ -27,7 +27,7 @@ class ScoreBoard(QDockWidget):
         self.mainLayout.addWidget(self.label_timeRemaining)
         self.setWidget(self.mainWidget)
 
-        # Set word wrap for labels to ensure text fits within the fixed width
+        #sets word wrap for labels to ensure text fits within the fixed width
         self.label_clickLocation.setWordWrap(True)
         self.label_timeRemaining.setWordWrap(True)
 
@@ -39,7 +39,7 @@ class ScoreBoard(QDockWidget):
     @pyqtSlot(str) 
     def setClickLocation(self, clickLoc):
         '''updates the label to show the click location'''
-        self.label_clickLocation.setText("Click Location: " + clickLoc)
+        self.label_clickLocation.setText("Click Location: \n" + clickLoc)
         print('slot ' + clickLoc)
 
     @pyqtSlot(int)
