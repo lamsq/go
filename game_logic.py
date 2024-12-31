@@ -88,9 +88,7 @@ class GameLogic:
                     stack.append((nr, nc))
                 elif neighbor_color == Piece.NoPiece:
                     liberties += 1
-
         return visited, liberties
-    # ----------------------------------------------------------------
 
     def print_board(self):
         for row in self.board:

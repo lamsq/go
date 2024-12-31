@@ -30,7 +30,6 @@ class BoardSizeDialog(QDialog):
         hbox.addWidget(self.radio_7x7)
         hbox.addWidget(self.radio_13x13)
         hbox.addWidget(self.radio_19x19)
-
         
         layout.addLayout(hbox)
 

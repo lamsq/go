@@ -7,11 +7,12 @@ from game_logic import GameLogic
 class Board(QFrame):  
     updateTimerSignal = pyqtSignal(int)  #signal sent for the timer 
     clickLocationSignal = pyqtSignal(str)  #signal sent when there is a new click
+    currentPlayerSignal = pyqtSignal(int) #signal for changing player
+    currentPlayer = 1
 
     cellSize = 40  #size of each cell 
     timerSpeed = 1000  #the timer updates every 1 second
     counter = 10  #the start number for the counter
-
 
     def __init__(self, parent, board_size):
         super().__init__(parent)
@@ -95,11 +96,14 @@ class Board(QFrame):
                 #if stone placed, switch players
                 if self.current_player == Piece.Black:
                     self.current_player = Piece.White
+                    currentPlayer = 2
                 else:
                     self.current_player = Piece.Black
+                    currentPlayer = 1
 
+            print("Current Player: ", currentPlayer)
+            self.currentPlayerSignal.emit(currentPlayer)
             self.update()  #triggers repaint
-
 
     def resetGame(self):
         '''clears pieces from the board'''
