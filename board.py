@@ -9,6 +9,7 @@ class Board(QFrame):
     clickLocationSignal = pyqtSignal(str)  #signal sent when there is a new click
     currentPlayerSignal = pyqtSignal(int) #signal for changing player
     prisonersCapturedSignal = pyqtSignal(int, int) #updates prisoners
+    territoriesUpdatedSignal = pyqtSignal(int, int) #updates territories
     
     currentPlayer = 2
 
@@ -45,8 +46,7 @@ class Board(QFrame):
         print("boardArray:")
         print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in self.boardArray]))
 
-    def mousePosToColRow(self, event):
-        
+    def mousePosToColRow(self, event):        
         '''converts the mouse click event to a row and column'''
         pos = event.position()
         padding = 20
@@ -92,21 +92,22 @@ class Board(QFrame):
             print("mousePressEvent() - " + clickLoc)
             self.clickLocationSignal.emit(clickLoc)
 
-            # Attempt to place via game_logic
+            #attempts to place
             placed = self.game_logic.place_stone(row,col,self.current_player)
             if placed:
-
                 black_prisoners, white_prisoners = self.game_logic.check_captures(row, col, self.current_player)
                 self.prisonersCapturedSignal.emit(black_prisoners, white_prisoners)
-
-
-                #if stone placed, switch players
-                if self.current_player == Piece.Black:
+                
+                if self.current_player == Piece.Black: #switch players
                     self.current_player = Piece.White
                     currentPlayer = 2
                 else:
                     self.current_player = Piece.Black
                     currentPlayer = 1
+
+                black_territory, white_territory = self.game_logic.count_territories()
+                self.territoriesUpdatedSignal.emit(black_territory, white_territory)
+                
             else:
                 print("Invalid move")
                 if self.current_player == Piece.Black:
@@ -123,10 +124,10 @@ class Board(QFrame):
             white_count = sum(row.count(Piece.White) for row in self.game_logic.board)
             print(f"Stones - Black: {black_count}, White: {white_count}")
 
-    def resetGame(self):
-        '''clears pieces from the board'''
-        self.game_logic.reset_board()
-        self.update()  #triggers repaint
+    # def resetGame(self):
+    #     '''clears pieces from the board'''
+    #     self.game_logic.reset_board()
+    #     self.update()  #triggers repaint
 
     def tryMove(self, newX, newY):
         '''tries to move a piece'''
@@ -169,11 +170,12 @@ class Board(QFrame):
         '''clears pieces from the board'''
         self.boardArray = [[0 for _ in range(self.boardWidth)] for _ in range(self.boardHeight)]
         self.clicked_points = []  # clears all placed dots
-        if hasattr(self, 'game_logic'):
-            self.game_logic.reset_board()
+        self.game_logic.reset_board()
+        self.currentPlayerSignal.emit(1)
+        self.current_player = Piece.Black
         self.update()  # triggers repaint
 
     def switch_player(self):
-            self.current_player = 3-self.current_player  #switches between 1 and 2 players
+            self.current_player = 3-self.current_player  #switches players
             self.currentPlayerSignal.emit(self.current_player)
             print(f"Current player switched to {self.current_player}")

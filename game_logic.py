@@ -115,3 +115,36 @@ class GameLogic:
     def print_board(self):
         for row in self.board:
             print(' '.join(map(str, row)))
+
+    def count_territories(self):
+        """counts the number of territories for both players and returns them as a tuple"""
+        def flood_fill(row, col, visited):
+            if (row, col) in visited or row < 0 or row >= self.board_size or col < 0 or col >= self.board_size:
+                return set(), set()            
+            if self.board[row][col] != Piece.NoPiece:
+                return set(), {self.board[row][col]}
+            
+            visited.add((row, col))
+            area = {(row, col)}
+            bordering = set()
+            
+            for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                new_area, new_bordering = flood_fill(row + dr, col + dc, visited)
+                area |= new_area
+                bordering |= new_bordering            
+            return area, bordering
+
+        black_territory = 0
+        white_territory = 0
+        visited = set()
+
+        for row in range(self.board_size):
+            for col in range(self.board_size):
+                if (row, col) not in visited and self.board[row][col] == Piece.NoPiece:
+                    area, bordering = flood_fill(row, col, visited)
+                    if len(bordering) == 1:
+                        if Piece.Black in bordering:
+                            black_territory += len(area)
+                        elif Piece.White in bordering:
+                            white_territory += len(area)
+        return black_territory, white_territory

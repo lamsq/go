@@ -71,6 +71,11 @@ class ScoreBoard(QDockWidget):
         board.updateTimerSignal.connect(self.setTimeRemaining)
         board.currentPlayerSignal.connect(self.setCurrentPlayer)
         board.prisonersCapturedSignal.connect(self.updatePrisoners)
+        board.territoriesUpdatedSignal.connect(self.updateTerritories)
+
+    def updateTerritories(self, black_territory, white_territory):
+        self.label_black_terr.setText(f"Territory: {black_territory}")
+        self.label_white_terr.setText(f"Territory: {white_territory}")
 
     @pyqtSlot(int, int)
     def updatePrisoners(self, black_prisoners, white_prisoners):
@@ -112,5 +117,6 @@ class ScoreBoard(QDockWidget):
         #resets variables
         self.setClickLocation("")
         self.setTimeRemaining(0)
-        self.setCurrentPlayer(2)
         self.updatePrisoners(0, 0)
+        self.label_black_terr.setText("Territory: 0")  
+        self.label_white_terr.setText("Territory: 0")
