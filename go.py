@@ -14,6 +14,8 @@ class Go(QMainWindow):
         self.board = None
         self.scoreBoard = None
         self.initUI()
+        icon = QIcon("./assets/icons/logo.png")
+        self.setWindowIcon(icon)
 
     def initUI(self):
         '''initiates application UI'''
@@ -74,7 +76,7 @@ class Go(QMainWindow):
 
         self.scoreBoard = ScoreBoard()
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.scoreBoard)
-        self.scoreBoard.make_connection(self.board)
+        self.scoreBoard.make_connection_board(self.board)
 
         self.scoreBoard.switchPlayerSignal.connect(self.board.switch_player)
 

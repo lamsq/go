@@ -8,7 +8,9 @@ class Board(QFrame):
     updateTimerSignal = pyqtSignal(int)  #signal sent for the timer 
     clickLocationSignal = pyqtSignal(str)  #signal sent when there is a new click
     currentPlayerSignal = pyqtSignal(int) #signal for changing player
-    currentPlayer = 1
+    prisonersCapturedSignal = pyqtSignal(int, int) #updates prisoners
+    
+    currentPlayer = 2
 
     cellSize = 40  #size of each cell 
     timerSpeed = 1000  #the timer updates every 1 second
@@ -21,7 +23,7 @@ class Board(QFrame):
 
         self.game_logic = GameLogic(board_size)
         self.current_player = Piece.Black
-        self.current_player = 1
+        self.current_player = 2
         self.initBoard()
 
     def initBoard(self):
@@ -93,6 +95,11 @@ class Board(QFrame):
             # Attempt to place via game_logic
             placed = self.game_logic.place_stone(row,col,self.current_player)
             if placed:
+
+                black_prisoners, white_prisoners = self.game_logic.check_captures(row, col, self.current_player)
+                self.prisonersCapturedSignal.emit(black_prisoners, white_prisoners)
+
+
                 #if stone placed, switch players
                 if self.current_player == Piece.Black:
                     self.current_player = Piece.White
@@ -100,16 +107,26 @@ class Board(QFrame):
                 else:
                     self.current_player = Piece.Black
                     currentPlayer = 1
+            else:
+                print("Invalid move")
+                if self.current_player == Piece.Black:
+                    currentPlayer = 1
+                else:
+                    currentPlayer = 2
 
-            #print("Current Player: ", currentPlayer)
+            #prints currentPlayer
             self.currentPlayerSignal.emit(currentPlayer)
             self.update()  #triggers repaint
+
+            #counts pieces
+            black_count = sum(row.count(Piece.Black) for row in self.game_logic.board)
+            white_count = sum(row.count(Piece.White) for row in self.game_logic.board)
+            print(f"Stones - Black: {black_count}, White: {white_count}")
 
     def resetGame(self):
         '''clears pieces from the board'''
         self.game_logic.reset_board()
         self.update()  #triggers repaint
-
 
     def tryMove(self, newX, newY):
         '''tries to move a piece'''

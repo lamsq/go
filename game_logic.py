@@ -1,23 +1,36 @@
 from piece import Piece
 
 class GameLogic:
+
     def __init__(self, board_size=19):
         print("Game Logic Object Created")
         self.board_size = board_size
         # Use Piece.NoPiece everywhere for empty cells
         self.board = [[Piece.NoPiece for _ in range(board_size)] for _ in range(board_size)]
+        self.captured_white= 0
+        self.captured_black= 0
 
     def reset_board(self):
         self.board = [[Piece.NoPiece for _ in range(self.board_size)]
                       for _ in range(self.board_size)]
 
     def is_valid_move(self, row, col, player):
-        """Check if (row, col) is in range and empty."""
+        """checks if place is avaliable"""
         if not (0 <= row < self.board_size and 0 <= col < self.board_size):
             return False
         if self.board[row][col] != Piece.NoPiece:
             return False
+        
+        if self.is_suicidal(row, col, player): #check for self-capture
+            return False        
         return True
+    
+    def is_suicidal(self, row, col, player):
+        """checks if move is suicidal"""
+        self.board[row][col] = player #temp stone
+        group, liberties = self.get_group_and_liberties(row, col) #checks liberties
+        self.board[row][col] = Piece.NoPiece #removes the temp stone
+        return liberties == 0 #suicide of no liberties
 
     def place_stone(self, row, col, player):
         """
@@ -44,6 +57,7 @@ class GameLogic:
         opponent = Piece.Black if (player == Piece.White) else Piece.White
         neighbors = self.get_neighbors(row, col)
         # For each adjacent cell, if it belongs to opponent, check if it’s captured
+        captured_stones = 0
         for (nr, nc) in neighbors:
             if self.board[nr][nc] == opponent:
                 group_stones, liberties = self.get_group_and_liberties(nr, nc)
@@ -51,6 +65,14 @@ class GameLogic:
                     # Remove them
                     for (r, c) in group_stones:
                         self.board[r][c] = Piece.NoPiece
+                    captured_stones += len(group_stones)
+                        
+        if player == Piece.Black:
+            self.captured_white += captured_stones
+        else:
+            self.captured_black += captured_stones
+
+        return self.captured_black, self.captured_white
 
     def get_neighbors(self, row, col):
         neighbors = []
