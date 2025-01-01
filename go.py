@@ -1,5 +1,6 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QDockWidget, QMenuBar, QMenu, QMessageBox
+from PyQt6.QtWidgets import QApplication, QMainWindow, QDockWidget, QMenuBar, QMenu, QMessageBox, QToolBar
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon, QAction
 from board import Board
 from score_board import ScoreBoard
 from board_size_dialog import BoardSizeDialog
@@ -17,10 +18,29 @@ class Go(QMainWindow):
     def initUI(self):
         '''initiates application UI'''
         self.create_menu_bar()
+        self.create_toolbar()
+        
         if self.show_board_size_dialog():
             self.setup_game()
         else:
             self.close()
+
+    def create_toolbar(self):
+        toolbar = QToolBar()
+        self.addToolBar(toolbar)
+
+        reset_action = QAction(QIcon("./assets/icons/toolbar/reset.png"), 'Reset', self)
+        reset_action.triggered.connect(self.reset_game)
+        toolbar.addAction(reset_action)
+
+    def reset_game(self):
+        if self.board:
+            self.board.resetGame()
+        if hasattr(self.board, 'game_logic'):
+            self.board.game_logic.current_player = 1  # Set current player to 1
+        if self.scoreBoard:
+            self.scoreBoard.reset_score()  # You might need to implement this method in ScoreBoard
+        print("Game has been reset")
 
     def show_board_size_dialog(self):
         dialog = BoardSizeDialog(self)
@@ -55,6 +75,8 @@ class Go(QMainWindow):
         self.scoreBoard = ScoreBoard()
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.scoreBoard)
         self.scoreBoard.make_connection(self.board)
+
+        self.scoreBoard.switchPlayerSignal.connect(self.board.switch_player)
 
         self.adjustSize()
         self.center()

@@ -21,10 +21,10 @@ class Board(QFrame):
 
         self.game_logic = GameLogic(board_size)
         self.current_player = Piece.Black
+        self.current_player = 1
         self.initBoard()
 
     def initBoard(self):
-    
         '''initiates board'''
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.timerEvent)
@@ -101,7 +101,7 @@ class Board(QFrame):
                     self.current_player = Piece.Black
                     currentPlayer = 1
 
-            print("Current Player: ", currentPlayer)
+            #print("Current Player: ", currentPlayer)
             self.currentPlayerSignal.emit(currentPlayer)
             self.update()  #triggers repaint
 
@@ -147,3 +147,16 @@ class Board(QFrame):
                         painter.setBrush(QBrush(Qt.GlobalColor.white))
                     painter.drawEllipse(-radius, -radius, 2*radius, 2*radius)
                     painter.restore()
+
+    def resetGame(self):
+        '''clears pieces from the board'''
+        self.boardArray = [[0 for _ in range(self.boardWidth)] for _ in range(self.boardHeight)]
+        self.clicked_points = []  # clears all placed dots
+        if hasattr(self, 'game_logic'):
+            self.game_logic.reset_board()
+        self.update()  # triggers repaint
+
+    def switch_player(self):
+            self.current_player = 3-self.current_player  #switches between 1 and 2 players
+            self.currentPlayerSignal.emit(self.current_player)
+            print(f"Current player switched to {self.current_player}")

@@ -1,8 +1,11 @@
-from PyQt6.QtWidgets import QDockWidget, QVBoxLayout, QWidget, QLabel
-from PyQt6.QtCore import pyqtSlot
+from PyQt6.QtWidgets import QDockWidget, QVBoxLayout, QWidget, QLabel, QPushButton
+from PyQt6.QtCore import pyqtSlot, pyqtSignal
 
 class ScoreBoard(QDockWidget):
     '''# base the score_board on a QDockWidget'''
+
+    passClicked = pyqtSignal()
+    switchPlayerSignal = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -21,11 +24,14 @@ class ScoreBoard(QDockWidget):
         self.label_clickLocation = QLabel("Click Location: ")
         self.label_timeRemaining = QLabel("Time remaining: ")
         self.label_currentPlayer = QLabel("Current Player: \n1")
+        self.pass_button = QPushButton("Pass")
+        self.pass_button.clicked.connect(self.on_pass_clicked)
 
         self.mainWidget.setLayout(self.mainLayout)
         self.mainLayout.addWidget(self.label_clickLocation)
         self.mainLayout.addWidget(self.label_timeRemaining)
         self.mainLayout.addWidget(self.label_currentPlayer)
+        self.mainLayout.addWidget(self.pass_button) 
         self.setWidget(self.mainWidget)
 
         #sets word wrap for labels to ensure text fits within the fixed width
@@ -58,3 +64,14 @@ class ScoreBoard(QDockWidget):
         self.label_timeRemaining.setText(update)
         print('slot ' + str(timeRemaining))
         # self.redraw()
+
+    def on_pass_clicked(self):
+        print("Pass button clicked")
+        self.passClicked.emit()  #emit signal when the button is clicked
+        self.switchPlayerSignal.emit()
+
+    def reset_score(self):
+        #resets variables
+        self.setClickLocation("")
+        self.setTimeRemaining(0)
+        self.setCurrentPlayer(1)
