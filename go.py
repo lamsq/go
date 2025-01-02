@@ -31,9 +31,15 @@ class Go(QMainWindow):
         toolbar = QToolBar()
         self.addToolBar(toolbar)
 
-        reset_action = QAction(QIcon("./assets/icons/toolbar/reset.png"), 'Reset', self)
+        reset_icon = QIcon("./assets/icons/toolbar/reset.png")
+        reset_action = QAction(reset_icon, 'Reset', self)
         reset_action.triggered.connect(self.reset_game)
         toolbar.addAction(reset_action)
+
+        settings_icon = QIcon("./assets/icons/toolbar/settings.png")
+        settings_action = QAction(settings_icon, "Settings", self)
+        settings_action.triggered.connect(self.open_settings)
+        toolbar.addAction(settings_action)
 
     def reset_game(self):
         if self.board:
@@ -90,9 +96,6 @@ class Go(QMainWindow):
 
         #game menu
         game_menu = menubar.addMenu('Game')
-        
-        settings_action = game_menu.addAction('Settings')
-        settings_action.triggered.connect(self.open_settings)
         
         quit_action = game_menu.addAction('Quit')
         quit_action.triggered.connect(self.close)

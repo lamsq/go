@@ -1,10 +1,14 @@
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QPushButton, QRadioButton, QButtonGroup, QLabel
+from PyQt6.QtGui import QIcon
 
 class BoardSizeDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Game settings")
         self.board_size = 7  #default
+
+        icon = QIcon("./assets/icons/logo.png")
+        self.setWindowIcon(icon)
 
         layout = QVBoxLayout()
 
