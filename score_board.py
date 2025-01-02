@@ -110,8 +110,14 @@ class ScoreBoard(QDockWidget):
 
     def on_pass_clicked(self):
         print("Pass button clicked")
-        self.passClicked.emit()  #emit signal when the button is clicked
+        self.passClicked.emit()  
         self.switchPlayerSignal.emit()
+        self.switch_current_player()
+        
+    def switch_current_player(self):
+        current = self.label_currentPlayer.text()
+        new_player = "White" if current == "Black" else "Black"
+        self.setCurrentPlayer(1 if new_player == "Black" else 2)
 
     def reset_score(self):
         #resets variables

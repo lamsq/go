@@ -124,11 +124,6 @@ class Board(QFrame):
             white_count = sum(row.count(Piece.White) for row in self.game_logic.board)
             print(f"Stones - Black: {black_count}, White: {white_count}")
 
-    # def resetGame(self):
-    #     '''clears pieces from the board'''
-    #     self.game_logic.reset_board()
-    #     self.update()  #triggers repaint
-
     def tryMove(self, newX, newY):
         '''tries to move a piece'''
         pass  #implement this method according to your logic
@@ -176,6 +171,6 @@ class Board(QFrame):
         self.update()  # triggers repaint
 
     def switch_player(self):
-            self.current_player = 3-self.current_player  #switches players
-            self.currentPlayerSignal.emit(self.current_player)
-            print(f"Current player switched to {self.current_player}")
+        self.current_player = 3-self.current_player  #switches players
+        self.currentPlayerSignal.emit(self.current_player)
+        print(f"Current player switched to {self.current_player}")
