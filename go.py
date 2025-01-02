@@ -33,13 +33,17 @@ class Go(QMainWindow):
 
         reset_icon = QIcon("./assets/icons/toolbar/reset.png")
         reset_action = QAction(reset_icon, 'Reset', self)
+        reset_action.setShortcut("Ctrl+R")
         reset_action.triggered.connect(self.reset_game)
         toolbar.addAction(reset_action)
+        
 
         settings_icon = QIcon("./assets/icons/toolbar/settings.png")
         settings_action = QAction(settings_icon, "Settings", self)
+        settings_action.setShortcut("Ctrl+S")
         settings_action.triggered.connect(self.open_settings)
         toolbar.addAction(settings_action)
+        
 
     def reset_game(self):
         if self.board:
@@ -97,17 +101,23 @@ class Go(QMainWindow):
         #game menu
         game_menu = menubar.addMenu('Game')
         
-        quit_action = game_menu.addAction('Quit')
+        quit_icon = QIcon("./assets/icons/menubar/game/exit.png")
+        quit_action = game_menu.addAction(quit_icon,'Quit')
         quit_action.triggered.connect(self.close)
+        quit_action.setShortcut("Ctrl+Q")
 
         #about menu
         about_menu = menubar.addMenu('About')
         
-        rules_action = about_menu.addAction('Rules')
+        rules_icon = QIcon("./assets/icons/menubar/about/rules.png")
+        rules_action = about_menu.addAction(rules_icon, 'Rules')
         rules_action.triggered.connect(self.show_rules)
+        rules_action.setShortcut("Ctrl+H")
         
-        about_action = about_menu.addAction('About')
+        about_icon = QIcon("./assets/icons/menubar/about/about.png")
+        about_action = about_menu.addAction(about_icon, 'About')
         about_action.triggered.connect(self.show_about)
+        about_action.setShortcut("Ctrl+A")
 
     def open_settings(self):
         if self.show_board_size_dialog():
