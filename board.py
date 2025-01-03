@@ -28,6 +28,15 @@ class Board(QFrame):
         self.current_player = 2
         self.initBoard()
 
+        #animation state
+        self.stone_animations = [[0 for _ in range(self.boardWidth)] for _ in range(self.boardHeight)]
+        
+        #animation timer
+        self.animation_timer = QTimer(self)
+        self.animation_timer.timeout.connect(self.updateAnimations)
+        self.animation_timer.start(7)  # updates every 7ms for smooth animation
+
+
     def initBoard(self):
         '''initiates board'''
         self.timer = QTimer(self)
@@ -96,6 +105,9 @@ class Board(QFrame):
             #attempts to place
             placed = self.game_logic.place_stone(row,col,self.current_player)
             if placed:
+
+                self.stone_animations[row][col] = 0.1
+                
                 black_prisoners, white_prisoners = self.game_logic.check_captures(row, col, self.current_player)
                 self.prisonersCapturedSignal.emit(black_prisoners, white_prisoners)
                 
@@ -131,7 +143,6 @@ class Board(QFrame):
             self.currentPlayerSignal.emit(currentPlayer)
             self.update()  #triggers repaint
 
-
     def tryMove(self, newX, newY):
         '''tries to move a piece'''
         pass  #implement this method according to your logic
@@ -158,7 +169,7 @@ class Board(QFrame):
     def drawPieces(self, painter):
         '''draw the pieces on the board'''
         padding = 20
-        radius = self.cellSize // 2 - 2
+        full_radius = self.cellSize // 2 - 2
 
         for row in range(self.boardHeight):
             for col in range(self.boardWidth):
@@ -170,8 +181,23 @@ class Board(QFrame):
                         painter.setBrush(QBrush(Qt.GlobalColor.black))
                     elif piece == Piece.White:
                         painter.setBrush(QBrush(Qt.GlobalColor.white))
+                    
+                    #animation
+                    animation_progress = self.stone_animations[row][col]
+                    radius = int(full_radius * animation_progress)
                     painter.drawEllipse(-radius, -radius, 2*radius, 2*radius)
                     painter.restore()
+
+    def updateAnimations(self):
+        '''Update stone animations'''
+        updated = False
+        for row in range(self.boardHeight):
+            for col in range(self.boardWidth):
+                if 0 < self.stone_animations[row][col] < 1:
+                    self.stone_animations[row][col] = min(1, self.stone_animations[row][col] + 0.1)
+                    updated = True
+        if updated:
+            self.update()  #repaint if animation is updated
 
     def resetGame(self):
         '''clears pieces from the board'''
@@ -180,6 +206,7 @@ class Board(QFrame):
         self.game_logic.reset_board()
         self.currentPlayerSignal.emit(1)
         self.current_player = Piece.Black
+        self.stone_animations = [[0 for _ in range(self.boardWidth)] for _ in range(self.boardHeight)]
         self.update()  # triggers repaint
 
     def switch_player(self):
