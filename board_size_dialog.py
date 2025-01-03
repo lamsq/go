@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QPushButton, QRadioButton, QButtonGroup, QLabel
 from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QFont
 
 class BoardSizeDialog(QDialog):
     def __init__(self, parent=None):
@@ -13,8 +14,13 @@ class BoardSizeDialog(QDialog):
 
         layout = QVBoxLayout()
 
+        bold_font = QFont()
+        bold_font.setBold(True)
+        bold_font.setPointSize(int(bold_font.pointSize() * 1.2))  #20% bigger
+
         #game settings
         caption = QLabel("Board size:")
+        caption.setFont(bold_font)
         layout.addWidget(caption)
 
         hbox = QHBoxLayout()
@@ -40,6 +46,7 @@ class BoardSizeDialog(QDialog):
 
         #timer settings
         timer_caption = QLabel("Timer (seconds):")
+        timer_caption.setFont(bold_font)
         layout.addWidget(timer_caption)
 
         timer_hbox = QHBoxLayout()

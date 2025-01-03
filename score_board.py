@@ -13,20 +13,24 @@ class ScoreBoard(QDockWidget):
 
     def initUI(self):
         '''initiates ScoreBoard UI'''
-        self.setFixedWidth(130)  #sets width to 130 px
+        self.setFixedWidth(150)  #sets width to 130 px
         self.setWindowTitle('ScoreBoard')
 
         #main widget 
         self.mainWidget = QWidget()
         self.mainLayout = QVBoxLayout()
 
+        
+
         bold_font = QFont()
         bold_font.setBold(True)
         bold_font.setPointSize(int(bold_font.pointSize() * 1.2))  #20% bigger
 
         #two labels which will be updated by signals
-        self.label_clickLocation = QLabel("Click Location: ")
+        self.label_clickLocation = QLabel("Click Location: \n")
+        
         self.label_timeRemaining = QLabel("Time remaining: ")
+        
         label_current = QLabel("Current Player:")
         label_current.setFont(bold_font)
         self.label_currentPlayer = QLabel("Black")
@@ -42,6 +46,22 @@ class ScoreBoard(QDockWidget):
         self.pass_button = QPushButton("Pass")
         self.pass_button.clicked.connect(self.on_pass_clicked)
 
+        self.pass_button.setStyleSheet("""
+        QPushButton {
+            background-color: purple;
+            color: white;
+            border: none;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        QPushButton:hover {
+            background-color: #8E44AD;
+        }
+        QPushButton:pressed {
+            background-color: #6C3483;
+        }
+        """)
+
         self.mainWidget.setLayout(self.mainLayout)
         self.mainLayout.addWidget(self.label_clickLocation)
         self.mainLayout.addWidget(self.label_timeRemaining)
@@ -55,6 +75,8 @@ class ScoreBoard(QDockWidget):
         self.mainLayout.addWidget(self.label_black_prisoners)
         self.mainLayout.addWidget(self.pass_button) 
         self.setWidget(self.mainWidget)
+
+        self.mainLayout.addStretch(1)
 
         #sets word wrap for labels to ensure text fits within the fixed width
         self.label_clickLocation.setWordWrap(True)

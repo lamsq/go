@@ -5,6 +5,7 @@ from board import Board
 from score_board import ScoreBoard
 from board_size_dialog import BoardSizeDialog
 import os
+import sys
 
 
 class Go(QMainWindow):
@@ -27,7 +28,7 @@ class Go(QMainWindow):
         if self.show_board_size_dialog():
             self.setup_game()
         else:
-            self.close()
+            sys.exit()
 
     def create_toolbar(self):
         toolbar = QToolBar()
