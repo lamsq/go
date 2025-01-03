@@ -91,10 +91,29 @@ class Go(QMainWindow):
         self.scoreBoard.make_connection_board(self.board)
 
         self.scoreBoard.switchPlayerSignal.connect(self.board.switch_player)
+        self.board.gameOverSignal.connect(self.show_game_over_dialog)
 
         self.adjustSize()
         self.center()
         self.setWindowTitle('Go')
+
+    def show_game_over_dialog(self, winner, winner_score, loser_score):
+        dialog = QMessageBox(self)
+        dialog.setWindowTitle("Game Over")
+        dialog.setText(f"<div style='text-align: center;'><b>{winner} won!</b><br>{winner} score: {winner_score}<br>Opponent score: {loser_score}</div>")
+
+        restart_button = QPushButton("Restart")
+        exit_button = QPushButton("Exit")
+
+        dialog.addButton(restart_button, QMessageBox.ButtonRole.AcceptRole)
+        dialog.addButton(exit_button, QMessageBox.ButtonRole.RejectRole)
+
+        result = dialog.exec()
+
+        if result == QMessageBox.ButtonRole.AcceptRole:
+            self.reset_game()
+        else:
+            self.close()
 
     def create_menu_bar(self):
         self.menuBar().clear()

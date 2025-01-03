@@ -148,3 +148,26 @@ class GameLogic:
                         elif Piece.White in bordering:
                             white_territory += len(area)
         return black_territory, white_territory
+    
+    def is_game_over(self):
+        return not (self.has_valid_moves(Piece.Black) and self.has_valid_moves(Piece.White))
+
+    def calculate_winner(self):
+        black_territory, white_territory = self.count_territories()
+        black_score = black_territory + self.captured_white
+        white_score = white_territory + self.captured_black
+        if black_score > white_score:
+            return "Black", black_score, white_score
+        elif white_score > black_score:
+            return "White", white_score, black_score
+        else:
+            return "Tie", black_score, white_score
+        
+    def has_valid_moves(self, player):
+        for row in range(self.board_size):
+            for col in range(self.board_size):
+                if self.is_valid_move(row, col, player):
+                    return True
+        return False
+
+    

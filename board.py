@@ -10,6 +10,7 @@ class Board(QFrame):
     currentPlayerSignal = pyqtSignal(int) #signal for changing player
     prisonersCapturedSignal = pyqtSignal(int, int) #updates prisoners
     territoriesUpdatedSignal = pyqtSignal(int, int) #updates territories
+    gameOverSignal = pyqtSignal(str, int, int) #signal for game over
     
     currentPlayer = 2
 
@@ -107,6 +108,17 @@ class Board(QFrame):
 
                 black_territory, white_territory = self.game_logic.count_territories()
                 self.territoriesUpdatedSignal.emit(black_territory, white_territory)
+            
+                if self.game_logic.is_game_over():
+                    winner, winner_score, loser_score = self.game_logic.calculate_winner()
+                    self.gameOverSignal.emit(winner, winner_score, loser_score)
+                elif not self.game_logic.has_valid_moves(self.current_player):
+                   
+                    self.switch_player()  #switch to other player if there's np moves
+                    if not self.game_logic.has_valid_moves(self.current_player):
+                        #game is over
+                        winner, winner_score, loser_score = self.game_logic.calculate_winner()
+                        self.gameOverSignal.emit(winner, winner_score, loser_score)
                 
             else:
                 print("Invalid move")
@@ -119,14 +131,14 @@ class Board(QFrame):
             self.currentPlayerSignal.emit(currentPlayer)
             self.update()  #triggers repaint
 
-            #counts pieces
-            black_count = sum(row.count(Piece.Black) for row in self.game_logic.board)
-            white_count = sum(row.count(Piece.White) for row in self.game_logic.board)
-            print(f"Stones - Black: {black_count}, White: {white_count}")
 
     def tryMove(self, newX, newY):
         '''tries to move a piece'''
         pass  #implement this method according to your logic
+
+    def switch_player(self):
+        self.current_player = Piece.White if self.current_player == Piece.Black else Piece.Black
+        self.currentPlayerSignal.emit(self.current_player)
 
     def drawBoardSquares(self, painter):
         '''draw all the squares on the board with padding around the edges'''
