@@ -1,10 +1,12 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QDockWidget, QMenuBar, QMenu, QMessageBox, QToolBar
+from PyQt6.QtWidgets import QApplication, QTextBrowser, QMainWindow, QDockWidget, QMenuBar, QMenu, QMessageBox, QToolBar
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon, QAction
 from board import Board
 from score_board import ScoreBoard
 from board_size_dialog import BoardSizeDialog
 import os
+from PyQt6.QtWidgets import QApplication, QTextBrowser, QMainWindow, QDockWidget, QMenuBar, QMenu, QMessageBox, QToolBar, QDialog, QVBoxLayout, QPushButton
+from PyQt6.QtCore import Qt, QUrl
 
 class Go(QMainWindow):
 
@@ -129,29 +131,42 @@ class Go(QMainWindow):
             return True
         return False
 
-    def show_rules(self):
-        rules_path = os.path.join(os.path.dirname(__file__), 'assets', 'rules.txt')
+    def show_html_content(self, title, file_path): #funct to show text files as html content
         try:
-            with open(rules_path, 'r') as file:
-                rules_text = file.read()
-            QMessageBox.information(self, 'Go Rules', rules_text)
+            with open(file_path, 'r', encoding='utf-8') as file:
+                html_content = file.read()
+            
+            dialog = QDialog(self)
+            dialog.setWindowTitle(title)
+            layout = QVBoxLayout()
+
+            browser = QTextBrowser()
+            browser.setOpenExternalLinks(True)
+            browser.setHtml(html_content)
+
+            url = QUrl.fromLocalFile(os.path.dirname(file_path) + '/')
+            browser.setSearchPaths([url.toString()])
+            layout.addWidget(browser)
+            button = QPushButton('Ok')
+            button.clicked.connect(dialog.close)
+            layout.addWidget(button)
+
+            dialog.setLayout(layout)
+            dialog.resize(650, 450) 
+            dialog.exec()
+
         except FileNotFoundError:
-            QMessageBox.warning(self, 'File Not Found', f"The rules file could not be found at {rules_path}")
+            QMessageBox.warning(self, 'File Not Found', f"The file could not be found at {file_path}")
         except Exception as e:
-            QMessageBox.critical(self, 'Error', f"An error occurred while reading the rules file: {str(e)}")
+            QMessageBox.critical(self, 'Error', f"An error occurred while reading the file: {str(e)}")
+
+    def show_rules(self):
+        rules_path = os.path.join("./assets/rules.txt")
+        self.show_html_content('Go Rules', rules_path)
 
     def show_about(self):
-        about_path = os.path.join(os.path.dirname(__file__), 'assets', 'about.txt')
-        try:
-            with open(about_path, 'r') as file:
-                about_text = file.read()
-            QMessageBox.information(self, 'About Go', about_text)
-        except FileNotFoundError:
-            QMessageBox.warning(self, 'File Not Found', f"The about file could not be found at {about_path}")
-        except Exception as e:
-            QMessageBox.critical(self, 'Error', f"An error occurred while reading the about file: {str(e)}")
-
-
+        about_path = os.path.join("./assets/about.txt")
+        self.show_html_content('About Go', about_path)
 
 
 
