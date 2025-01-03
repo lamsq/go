@@ -9,10 +9,16 @@ class GameLogic:
         self.board = [[Piece.NoPiece for _ in range(board_size)] for _ in range(board_size)]
         self.captured_white= 0
         self.captured_black= 0
+       
 
     def reset_board(self):
         self.board = [[Piece.NoPiece for _ in range(self.board_size)]
                       for _ in range(self.board_size)]
+        
+        self.captured_black = 0
+        self.captured_white = 0
+        self.black_territory = 0
+        self.white_territory = 0
 
     def is_valid_move(self, row, col, player):
         """checks if place is avaliable"""
@@ -143,11 +149,20 @@ class GameLogic:
                 if (row, col) not in visited and self.board[row][col] == Piece.NoPiece:
                     area, bordering = flood_fill(row, col, visited)
                     if len(bordering) == 1:
-                        if Piece.Black in bordering:
+                        if Piece.Black in bordering and all(self.is_enclosed(r, c, Piece.Black) for r, c in area):
                             black_territory += len(area)
-                        elif Piece.White in bordering:
+                        elif Piece.White in bordering and all(self.is_enclosed(r, c, Piece.White) for r, c in area):
                             white_territory += len(area)
         return black_territory, white_territory
+
+    def is_enclosed(self, row, col, player):
+        """Check if a position is enclosed by a player's stones"""
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            r, c = row + dr, col + dc
+            if 0 <= r < self.board_size and 0 <= c < self.board_size:
+                if self.board[r][c] == Piece.NoPiece or self.board[r][c] != player:
+                    return False
+        return True
     
     def is_game_over(self):
         return not (self.has_valid_moves(Piece.Black) and self.has_valid_moves(Piece.White))

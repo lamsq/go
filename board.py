@@ -213,3 +213,4 @@ class Board(QFrame):
         self.current_player = 3-self.current_player  #switches players
         self.currentPlayerSignal.emit(self.current_player)
         print(f"Current player switched to {self.current_player}")
+        
