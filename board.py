@@ -16,7 +16,7 @@ class Board(QFrame):
 
     cellSize = 40  #size of each cell 
     timerSpeed = 1000  #the timer updates every 1 second
-    counter = 10  #the start number for the counter
+    #counter = 10  #the start number for the counter
 
     def __init__(self, parent, board_size):
         super().__init__(parent)
@@ -26,6 +26,7 @@ class Board(QFrame):
         self.game_logic = GameLogic(board_size)
         self.current_player = Piece.Black
         self.current_player = 2
+        self.counter = 120
         self.initBoard()
 
         #animation state
@@ -34,7 +35,7 @@ class Board(QFrame):
         #animation timer
         self.animation_timer = QTimer(self)
         self.animation_timer.timeout.connect(self.updateAnimations)
-        self.animation_timer.start(7)  # updates every 7ms for smooth animation
+        self.animation_timer.start(10)  # updates every 7ms for smooth animation
 
 
     def initBoard(self):
@@ -76,17 +77,25 @@ class Board(QFrame):
         '''starts game'''
         self.isStarted = True  #sets the start flag to true
         self.resetGame()  #resets the game
+        self.counter = 120
         self.timer.start(self.timerSpeed)  #starts the timer with the correct speed
         print("start () - timer is started")
 
     def timerEvent(self):
         '''automatically called when the timer is updated. based on the timerSpeed variable '''
-        # TODO adapt this code to handle your timers
-        if Board.counter == 0:
-            print("Game over")
-        self.counter -= 1
-        print('timerEvent()', self.counter)
-        self.updateTimerSignal.emit(self.counter)
+        if self.counter > 0:
+            self.counter -= 1
+            print('timerEvent()', self.counter)
+            self.updateTimerSignal.emit(self.counter)
+        else:
+            self.timer.stop()
+            self.end_game()
+
+    def end_game(self):
+        '''Ends the game and calculates the winner'''
+        winner, winner_score, loser_score = self.game_logic.calculate_winner()
+        self.gameOverSignal.emit(winner, winner_score, loser_score)
+        print(f"Game over! Winner: {winner}, Score: {winner_score} to {loser_score}")
 
     def paintEvent(self, event):
         '''paints the board and the pieces of the game'''
@@ -207,6 +216,8 @@ class Board(QFrame):
         self.currentPlayerSignal.emit(1)
         self.current_player = Piece.Black
         self.stone_animations = [[0 for _ in range(self.boardWidth)] for _ in range(self.boardHeight)]
+        self.counter = 120 #resets timer 
+        self.updateTimerSignal.emit(self.counter)
         self.update()  # triggers repaint
 
     def switch_player(self):

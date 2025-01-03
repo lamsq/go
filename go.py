@@ -171,7 +171,7 @@ class Go(QMainWindow):
             layout.addWidget(button)
 
             dialog.setLayout(layout)
-            dialog.resize(650, 450) 
+            dialog.resize(700, 500) 
             dialog.exec()
 
         except FileNotFoundError:

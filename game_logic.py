@@ -176,7 +176,7 @@ class GameLogic:
         elif white_score > black_score:
             return "White", white_score, black_score
         else:
-            return "Tie", black_score, white_score
+            return "Nobody", black_score, white_score
         
     def has_valid_moves(self, player):
         for row in range(self.board_size):

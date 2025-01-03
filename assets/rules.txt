@@ -1,1 +1,235 @@
-rules test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Go (Game) - The Rules</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      color: #000000;
+	  font-size: 13px;
+	  margin: 20px;
+	  
+    }
+    h1 {
+      color: #20B4AB;
+	  margin-left: 8px;
+    }
+	
+	h2 {
+      color: #5adbd7;
+	  margin-left: 8px;
+    }
+	
+	
+  </style>
+</head>
+<body>
+
+  <h1>Rules</h1>
+  <h2>Overview</h2>
+  <p>&nbsp;&nbsp;&nbsp;A game of Go starts with an empty board. Each player has an effectively unlimited supply of pieces (called <b>stones</b>), one taking the black stones, the other taking white. The main object of the game is to use your stones to form territories by surrounding vacant areas of the board. It is also possible to capture your opponent's stones by completely surrounding them.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;Players take turns, placing one of their stones on a vacant point at each turn, with Black playing first. Note that stones are placed on the intersections of the lines rather than in the squares and once played stones are not moved. However, they may be captured, in which case they are removed from the board, and kept by the capturing player as <b>prisoners</b>.</p>
+
+    <figure>
+      <center>
+          <p><img src="assets/rules/1.jpg" alt="Diagram 2" height="200" width="200"  ></p>
+		  <figcaption>Diagram 1</figcaption>
+      </center>
+    </figure>
+
+
+  <p>&nbsp;&nbsp;&nbsp;At the end of the game, the players count one point for each vacant point inside their own territory, and one point for every stone they have captured. The player with the larger total of territory plus prisoners is the winner.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;<b>Diagram 1</b> shows the position at the end of a game on a 9 by 9 board, during which Black captured one white stone at <b>a</b>.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;Black has surrounded 15 points of territory, 10 in the lower right corner and 5 towards the top of the board. Black's territory includes the point <b>a</b> formerly occupied by the white stone Black has captured. Adding this prisoner, Black has a total of 16 points.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;White's territory is 17 points, so White wins the game by one point.</p>
+
+  <h2>Capturing Stones and Counting Liberties</h2>
+  <p>&nbsp;&nbsp;&nbsp;<i>The empty points which are horizontally and vertically adjacent to a stone, or a solidly connected string of stones, are known as liberties. An isolated stone or solidly connected string of stones is captured when all of its liberties are occupied by enemy stones.</i></p>
+
+  <center>
+  <table>
+    <tr>
+    <td>
+      <figure>
+		  <center>
+			  <p><img src="assets/rules/2.jpg" alt="Diagram 2" height="200" width="200" ></p>
+			  <figcaption>Diagram 2</figcaption>
+		  </center>
+      </figure>
+      </td>
+      <td>
+      <figure>
+		  <center>
+			  <p><img src="assets/rules/3.jpg" alt="Diagram 3" height="200" width="200"  ></p>
+			  <figcaption>Diagram 3</figcaption>
+		  </center>
+      </figure>
+      </td>
+      <td>
+      <figure>
+		  <center>
+			  <p><img src="assets/rules/4.jpg" alt="Diagram 4" height="200" width="200"  ></p>
+			  <figcaption>Diagram 4</figcaption>
+		  </center>
+      </figure>
+      </td>
+    </tr>
+  </table>
+  </center>
+
+
+  <p>&nbsp;&nbsp;&nbsp;<b>Diagram 2</b> shows three isolated white stones with their liberties marked by crosses. Stones which are on the edge of the board have fewer liberties than those in the centre of the board. A single stone on the side has three liberties, and a stone in the corner has only two liberties.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;<b>Diagram 3</b> shows the same three stones of <b>Diagram 2</b> each with only one liberty left and therefore subject to capture on Black's next turn. Each of these white stones is said to be in <i>atari</i>, meaning they are about to be captured.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;<b>Diagram 4</b> shows the position which would arise if Black went on to play at b in <b>Diagram 3</b>. Black has taken the captured stone from the board, and in a real game would keep it as a prisoner. The same remarks would apply to the other two white stones, should Black play at c or d in <b>Diagram 4</b>.</p>
+
+  <figure>
+      <center>
+          <p><img src="assets/rules/5.jpg" alt="Diagram 5" height="200" width="200"  ></p>
+		  <figcaption>Diagram 5</figcaption>
+      </center>
+    </figure>
+  <br>
+
+  <h2>Strings</h2>
+  <p>&nbsp;&nbsp;&nbsp;Stones occupying adjacent points constitute a solidly connected string. Two examples of such solidly connected strings of stones are shown in <b>Diagram 5</b>. It is important to remember that only stones which are horizontally or vertically adjacent are solidly connected; diagonals do not count as connections. Thus, for example, the two marked black stones in the top left of <b>Diagram 5</b> are two separate strings, not a single one.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;Several strings close together, which belong to the same player, are often described as a group. So these two strings form a group.</p>
+
+  <center>
+  <table>
+    <tr>
+    <td>
+      <figure>
+      <center>
+          <p><img src="assets/rules/6.jpg" alt="Diagram 6" height="200" width="200"  ></p>
+		  <figcaption>Diagram 6</figcaption>
+      </center>
+      </figure>
+      </td>
+      <td>
+      <figure>
+      <center>
+          <p><img src="assets/rules/7.jpg" alt="Diagram 7" height="200" width="200"  ></p>
+		  <figcaption>Diagram 7</figcaption>
+      </center>
+      </figure>
+      </td>
+    </tr>
+  </table>
+  </center>
+
+  <h2>Capturing strings</h2>
+  <p>&nbsp;&nbsp;&nbsp;As far as capturing is concerned, a string of stones is treated as a single unit. As with isolated stones, a string is captured when all of its liberties are occupied by enemy stones.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;In <b>Diagram 6</b> the strings of <b>Diagram 5</b> have both been reduced to just one liberty. Note that the black string in the top right is not yet captured because of the internal liberty at <b>f</b>. The two stones at the top left of <b>Diagram 6</b> can each be captured independently at <b>g</b> or <b>h</b>.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;In <b>Diagram 7</b> we see the position which would result if Black captured at <b>e</b> and White captured at <b>f</b> and at <b>g</b>. The remaining black stone could be captured at <b>h</b>. As with the capture of a single stone, the points formerly occupied by the black string have become white territory, and vice versa.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;A player may not self-capture, that is play a stone into a position where it would have no liberties or form part of a string which would thereby have no liberties, unless, as a result, one or more of the stones surrounding it is captured.</p>
+
+  <center>
+  <table>
+    <tr>
+    <td>
+      <figure>
+      <center>
+          <p><img src="assets/rules/8.jpg" alt="Diagram 8" height="200" width="200"  ></p>
+		  <figcaption>Diagram 8</figcaption>
+      </center>
+      </figure>
+      </td>
+      <td>
+      <figure>
+      <center>
+          <p><img src="assets/rules/9.jpg" alt="Diagram 9" height="200" width="200"  ></p>
+		  <figcaption>Diagram 9</figcaption>
+      </center>
+      </figure>
+      </td>
+    </tr>
+  </table>
+  </center>
+
+  <p>&nbsp;&nbsp;&nbsp;Diagrams 8 and 9 illustrate the rule governing self-capture. In <b>Diagram 8</b>, White may not play at <b>i</b> or <b>j</b>, since either of these plays would be self-capture; the stones would then have no liberties. However, if the outside liberties have been filled, as shown in <b>Diagram 9</b>, then the plays at <b>i</b> and <b>j</b> become legal; they fill the last black liberty in each case, and result in the black stones being captured and removed from the board as White's prisoners.</p>
+
+    <figure>
+      <center>
+          <p><img src="assets/rules/10.jpg" alt="Diagram 10" height="200" width="200"  ></p>
+		  <figcaption>Diagram 10</figcaption>
+      </center>
+    </figure>
+
+  <h2>Life and death and the concept of eyes</h2>
+  <p>&nbsp;&nbsp;&nbsp;In <b>Diagram 9</b>, White was able to play at <b>i</b> and <b>j</b> because these plays result in the capture of the adjacent black stones. Since White's plays capture some stones, they do not count as self-capture.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;A different situation is shown in <b>Diagram 10</b>. The black string here could only be captured if White were able to play at both <b>m</b> and <b>n</b>. Since the first of these plays would be self-capture, there is no way that White can carry out the capture. These two separate spaces within the group are known as eyes.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;Any string or group of stones which has two or more eyes is permanently safe from capture and is referred to as a live string or live group. Conversely, a string of stones which is unable to make two eyes, and is cut off and surrounded by live enemy strings, is called a dead string since it is hopeless and unable to avoid eventual capture.</p>
+
+	<figure>
+      <center>
+          <p><img src="assets/rules/11.jpg" alt="Diagram 11" height="200" width="200"  ></p>
+		  <figcaption>Diagram 11</figcaption>
+      </center>
+    </figure>
+	  
+  <p>&nbsp;&nbsp;&nbsp;In <b>Diagram 11</b>, the black string at the bottom is in danger of being captured. To ensure that Black's string has two eyes, Black needs to play at <b>o</b>. If White plays at <b>o</b>, the black string will no longer be able to make two eyes, and cannot avoid eventual capture; White can always fill in the outside liberties and then play at <b>p</b> and at <b>q</b>. Black plays at <b>p</b> or <b>q</b> would only hasten the string's death.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;The black string at the top left of <b>Diagram 11</b> is already alive even though there is a White stone inside one of its eyes. Since White can never capture the black stones, the White stone caught inside the string cannot be saved.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;In the course of a real game, players are not obliged to complete the capture of an isolated dead string once it is clear to both players that the string is dead. We call this a hopeless string. In <b>Diagram 11</b>, once White has played at <b>o</b>, the situation may be left as it is until the end of the game. Then, the hopeless strings are simply removed from the board and counted together with the capturing player's other prisoners.</p>
+
+  <center>
+  <table>
+    <tr>
+    <td>
+      <figure>
+      <center>
+          <p><img src="assets/rules/12.jpg" alt="Diagram 12" height="200" width="200"  ></p>
+		  <figcaption>Diagram 12</figcaption>
+      </center>
+      </figure>
+      </td>
+      <td>
+      <figure>
+        <center>
+          <p><img src="assets/rules/13.jpg" alt="Diagram 13" height="200" width="200"  ></p>
+		  <figcaption>Diagram 13</figcaption>
+        </center>
+      </figure>
+      </td>
+    </tr>
+  </table></center>
+
+  <h2>The ko rule</h2>
+  <p>&nbsp;&nbsp;&nbsp;At the top of <b>Diagram 12</b>, Black can capture a stone by playing at <b>r</b>. This results in the situation at the top of <b>Diagram 13</b>. However, this stone is itself vulnerable to capture by a White play at <b>u</b> in <b>Diagram 13</b>. If White were allowed to recapture immediately at <b>u</b>, the position would revert to that in <b>Diagram 12</b>, and there would be nothing to prevent this capture and recapture continuing indefinitely. This pattern of stones is called <i>ko</i> - a Japanese term meaning eternity.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;The ko rule removes this possibility of indefinite repetition by forbidding the recapture of the ko, in this case a play at <b>u</b> in <b>Diagram 13</b>, until White has made at least one play elsewhere. Black may then fill the ko, but if Black chooses not to do so, instead answering White's intervening turn elsewhere, White is then permitted to retake the ko. Similar remarks apply to the other two positions in these diagrams; the corresponding plays at <b>w</b> and <b>v</b> in <b>Diagram 13</b> must also be delayed by one turn.</p>
+
+    <figure>
+      <center>
+          <p><img src="assets/rules/14.jpg" alt="Diagram 14" height="200" width="200"  ></p>
+		  <figcaption>Diagram 14</figcaption>
+      </center>
+    </figure>
+	  
+  <h2>Seki - a kind of local stalemate</h2>
+  <p>&nbsp;&nbsp;&nbsp;Usually a string which cannot make two eyes will die unless one of the surrounding enemy strings also lacks two eyes. This often leads to a race to capture, but can also result in a stand-off situation, known as <i>seki</i>, in which neither string has two eyes, but neither can capture the other due to a shortage of liberties. Two examples of seki are shown in <b>Diagram 14</b>. Neither player can afford to play at <b>x</b>, <b>y</b> or <b>z</b>, since to do so would enable the other to make a capture.</p>
+
+  <h2>The End of the Game</h2>
+  <p>&nbsp;&nbsp;&nbsp;When you think your territories are all safe, you can't gain any more territory, reduce your opponent's territory, or capture more strings, instead of playing a stone on the board you pass and hand a stone to your opponent as a prisoner. Two consecutive passes ends the game.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;Any hopeless strings are removed and become prisoners. If you cannot agree whether a string is dead or not, then continue playing; you can then complete capture of disputed strings or confirm they are alive. (Playing during a continuation does not change the score as each play is the same as a pass.) Since Black played first, White must play last and may need to make a further pass.</p>
+
+  <p>&nbsp;&nbsp;&nbsp;Now you know how to play Go at a basic level! Enjoy your games.</p>
+
+</body>
+</html>
