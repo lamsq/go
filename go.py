@@ -1,12 +1,11 @@
-from PyQt6.QtWidgets import QApplication, QTextBrowser, QMainWindow, QDockWidget, QMenuBar, QMenu, QMessageBox, QToolBar
-from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QTextBrowser, QMainWindow, QDockWidget, QMenuBar, QMenu, QMessageBox, QToolBar, QDialog, QVBoxLayout, QPushButton
+from PyQt6.QtCore import Qt, QUrl, QTimer
 from PyQt6.QtGui import QIcon, QAction
 from board import Board
 from score_board import ScoreBoard
 from board_size_dialog import BoardSizeDialog
 import os
-from PyQt6.QtWidgets import QApplication, QTextBrowser, QMainWindow, QDockWidget, QMenuBar, QMenu, QMessageBox, QToolBar, QDialog, QVBoxLayout, QPushButton
-from PyQt6.QtCore import Qt, QUrl
+
 
 class Go(QMainWindow):
 
@@ -15,6 +14,7 @@ class Go(QMainWindow):
         self.board_size = None
         self.board = None
         self.scoreBoard = None
+        
         self.initUI()
         icon = QIcon("./assets/icons/logo.png")
         self.setWindowIcon(icon)
@@ -45,7 +45,6 @@ class Go(QMainWindow):
         settings_action.setShortcut("Ctrl+S")
         settings_action.triggered.connect(self.open_settings)
         toolbar.addAction(settings_action)
-        
 
     def reset_game(self):
         if self.board:
@@ -53,13 +52,15 @@ class Go(QMainWindow):
         if hasattr(self.board, 'game_logic'):
             self.board.game_logic.current_player = 1  # Set current player to 1
         if self.scoreBoard:
-            self.scoreBoard.reset_score()  # You might need to implement this method in ScoreBoard
+            self.scoreBoard.reset_score()  
+
         print("Game has been reset")
 
     def show_board_size_dialog(self):
         dialog = BoardSizeDialog(self)
         if dialog.exec():
             self.board_size = dialog.get_board_size()
+            self.timer_value = dialog.get_timer_value()
             return True
         return False
 
@@ -83,7 +84,7 @@ class Go(QMainWindow):
         if self.scoreBoard:
             self.scoreBoard.setParent(None)
 
-        self.board = Board(self, self.board_size)
+        self.board = Board(self, self.board_size, self.timer_value)
         self.setCentralWidget(self.board)
 
         self.scoreBoard = ScoreBoard()
@@ -96,6 +97,8 @@ class Go(QMainWindow):
         self.adjustSize()
         self.center()
         self.setWindowTitle('Go')
+
+        QTimer.singleShot(50, self.center)
 
     def show_game_over_dialog(self, winner, winner_score, loser_score):
         dialog = QMessageBox(self)
@@ -143,7 +146,8 @@ class Go(QMainWindow):
     def open_settings(self):
         if self.show_board_size_dialog():
             self.setup_game()
-
+            QTimer.singleShot(50, self.center)
+            
     def show(self):
         if self.board_size is not None:
             super().show()

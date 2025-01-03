@@ -18,7 +18,7 @@ class Board(QFrame):
     timerSpeed = 1000  #the timer updates every 1 second
     #counter = 10  #the start number for the counter
 
-    def __init__(self, parent, board_size):
+    def __init__(self, parent, board_size, timer_value):
         super().__init__(parent)
         self.boardWidth = board_size
         self.boardHeight = board_size
@@ -26,7 +26,7 @@ class Board(QFrame):
         self.game_logic = GameLogic(board_size)
         self.current_player = Piece.Black
         self.current_player = 2
-        self.counter = 120
+        self.counter = timer_value
         self.initBoard()
 
         #animation state
@@ -75,9 +75,9 @@ class Board(QFrame):
 
     def start(self):
         '''starts game'''
+        '''starts game'''
         self.isStarted = True  #sets the start flag to true
         self.resetGame()  #resets the game
-        self.counter = 120
         self.timer.start(self.timerSpeed)  #starts the timer with the correct speed
         print("start () - timer is started")
 
@@ -216,8 +216,8 @@ class Board(QFrame):
         self.currentPlayerSignal.emit(1)
         self.current_player = Piece.Black
         self.stone_animations = [[0 for _ in range(self.boardWidth)] for _ in range(self.boardHeight)]
-        self.counter = 120 #resets timer 
-        self.updateTimerSignal.emit(self.counter)
+        self.counter = self.parent().timer_value  # Reset the counter to the initial value
+        #self.updateTimerSignal.emit(self.counter)
         self.update()  # triggers repaint
 
     def switch_player(self):

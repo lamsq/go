@@ -6,6 +6,7 @@ class BoardSizeDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle("Game settings")
         self.board_size = 7  #default
+        self.timer_value = 300
 
         icon = QIcon("./assets/icons/logo.png")
         self.setWindowIcon(icon)
@@ -37,6 +38,31 @@ class BoardSizeDialog(QDialog):
         
         layout.addLayout(hbox)
 
+        #timer settings
+        timer_caption = QLabel("Timer (seconds):")
+        layout.addWidget(timer_caption)
+
+        timer_hbox = QHBoxLayout()
+
+        #timer options
+        self.radio_150 = QRadioButton("150")
+        self.radio_300 = QRadioButton("300")
+        self.radio_600 = QRadioButton("600")
+
+        self.timer_group = QButtonGroup()
+        self.timer_group.addButton(self.radio_150)
+        self.timer_group.addButton(self.radio_300)
+        self.timer_group.addButton(self.radio_600)
+
+        self.radio_300.setChecked(True)
+
+        #adds timer radio buttons 
+        timer_hbox.addWidget(self.radio_150)
+        timer_hbox.addWidget(self.radio_300)
+        timer_hbox.addWidget(self.radio_600)
+
+        layout.addLayout(timer_hbox)
+
         #ok button
         ok_button = QPushButton("OK")
         ok_button.clicked.connect(self.on_ok)
@@ -51,7 +77,18 @@ class BoardSizeDialog(QDialog):
             self.board_size = 13
         elif self.radio_19x19.isChecked():
             self.board_size = 19
+
+        if self.radio_150.isChecked():
+            self.timer_value = 150
+        elif self.radio_300.isChecked():
+            self.timer_value = 300
+        elif self.radio_600.isChecked():
+            self.timer_value = 600
+
         self.accept()
 
     def get_board_size(self):
         return self.board_size
+    
+    def get_timer_value(self):
+        return self.timer_value
